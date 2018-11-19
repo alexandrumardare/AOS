@@ -1,0 +1,33 @@
+version: "3"
+
+volumes:
+  dbscripts:
+    driver: local
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=lab5
+      - MYSQL_USER=alex
+      - MYSQL_PASSWORD=alex
+    ports:
+      - "3306:3306"
+    volumes:
+    - dbscripts:/docker-entrypoint-initdb.d
+
+  tema2:
+    build: .
+    command: mvn clean spring-boot:run
+    depends_on:
+      - mysql
+    ports:
+      - "8765:8080"
+    environment:
+      - DATABASE_HOST=alex
+      - DATABASE_USER=alex
+      - DATABASE_PASSWORD=alex
+      - DATABASE_NAME=lab5
+      - DATABASE_PORT=3306
